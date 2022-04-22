@@ -7,13 +7,9 @@
 		</p>
 		<button @click="changeTestVariables">テキストが変わる</button>
 
-		<ul>
-			<li v-for="pet in pets" :key="pet.id">
-				{{ pet.name }}
-			</li>
-		</ul>
+		{{ fromApi }}
 
-		<button @click="getValFromPetstore">ペットストアのテストAPI叩く</button>
+		<button @click="getValFromAPI">テストAPI叩く</button>
 
 		<p v-for="ai in testArray" :key="ai">
 			{{ ai }}
@@ -42,17 +38,15 @@
 			key1: 'val1',
 			key2: 'val2'
 		}
-		pets: { id: string; name: string }[] = []
+		fromApi = ''
 
 		changeTestVariables() {
 			this.testVariables = '変わったよ'
 		}
 
-		async getValFromPetstore() {
-			const { data: pets } = await this.axios.get(
-				'https://petstore.swagger.io/v2/pet/findByStatus?status=available'
-			)
-			this.pets = pets
+		async getValFromAPI() {
+			const { data } = await this.axios.get('http://localhost:3001')
+			this.fromApi = data
 		}
 	}
 </script>
