@@ -15,8 +15,7 @@
 		recoredText = ''
 
 		async mounted() {
-			const { webkitSpeechRecognition, SpeechRecognition } = window as any
-			alert(`${webkitSpeechRecognition} ${SpeechRecognition}`)
+			const { webkitSpeechRecognition } = window as any
 			const recognition = new webkitSpeechRecognition()
 			recognition.lang = 'ja-JP'
 			recognition.continuous = true
