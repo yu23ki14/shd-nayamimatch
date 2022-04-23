@@ -1,11 +1,14 @@
 import { google } from "googleapis"
 import { HttpFunction } from '@google-cloud/functions-framework';
+import { urlencoded } from "express";
+import { url } from "inspector";
 
 const customSearch = google.customsearch('v1');
 const options = {
   cx: "9bc5302f216ada935",
   q: "",
   num: 0,
+  ExcludeTerms: "",
   auth: "AIzaSyDW9ZLZazQikKD1MuIaJaX1cdzq77pOYD0"
 }
 
@@ -23,6 +26,8 @@ export const getSearchResults: HttpFunction = (req, res) => {
     options.num = Number(offset);
     console.log("offset:", offset);
   }
+  // TODO
+  //options.ExcludeTerms = encodeURI("神奈川");
 
   // TODO catch()の対応が必要
   customSearch.cse.list(options)
