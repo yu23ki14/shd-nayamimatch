@@ -24,8 +24,19 @@
 // // TODO: more examples
 
 import type {HttpFunction} from '@google-cloud/functions-framework/build/src/functions';
+import {getKeywords} from './logics/get_keywords';
+import {getSearchResults} from './logics/get_searchresults';
 
-export const helloWorld: HttpFunction = (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
-  res.send('Hello, World a');
+export const index: HttpFunction = async (req, res) => {
+  switch (req.path) {
+    case '/get-keywords':
+      await getKeywords(req, res);
+      return;
+    case '/get-searchresults':
+      await getSearchResults(req, res);
+      return;
+    default:
+      res.send('not found');
+      return;
+  }
 };
