@@ -14,4 +14,5 @@ yarn watch
 
 ### Customize configuration
 
-See [Configuration Reference](https://github.com/GoogleCloudPlatform/functions-framework-nodejs).
+See [functions-framework Reference](https://github.com/GoogleCloudPlatform/functions-framework-nodejs).
+See [custom-search Reference](https://developers.google.com/custom-search/v1/overview).
