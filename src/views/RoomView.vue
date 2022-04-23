@@ -12,7 +12,7 @@
 <script lang="ts">
 	import { Options, Vue } from 'vue-class-component'
 	import ChatWindow from 'vue-advanced-chat'
-  import 'vue-advanced-chat/dist/vue-advanced-chat.css'
+	import 'vue-advanced-chat/dist/vue-advanced-chat.css'
 
 	@Options({
 		components: {
