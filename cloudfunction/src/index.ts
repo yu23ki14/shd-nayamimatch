@@ -28,6 +28,10 @@ import {getKeywords} from './logics/get_keywords';
 import {getSearchResults} from './logics/get_searchresults';
 
 export const index: HttpFunction = async (req, res) => {
+  if (req.method != 'POST') {
+    res.status(503).json({message: 'NOT ALLOWED'}).end();
+    return;
+  }
   switch (req.path) {
     case '/get-keywords':
       await getKeywords(req, res);

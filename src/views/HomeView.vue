@@ -1,6 +1,7 @@
 <template>
 	<div class="home">
 		<img alt="Vue logo" src="../assets/logo.png" />
+		<VoiceRecognition />
 
 		<p>
 			{{ testVariables }}
@@ -25,10 +26,12 @@
 <script lang="ts">
 	import { Options, Vue } from 'vue-class-component'
 	import HelloWorld from '../components/HelloWorld.vue'
+	import VoiceRecognition from '../components/VoiceRecognition.vue'
 
 	@Options({
 		components: {
-			HelloWorld
+			HelloWorld,
+			VoiceRecognition
 		}
 	})
 	export default class HomeView extends Vue {
