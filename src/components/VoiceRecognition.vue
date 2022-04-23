@@ -15,7 +15,8 @@
 		recoredText = ''
 
 		async mounted() {
-			const { webkitSpeechRecognition } = window as any
+			const { webkitSpeechRecognition, SpeechRecognition } = window as any
+			alert(`${webkitSpeechRecognition} ${SpeechRecognition}`)
 			const recognition = new webkitSpeechRecognition()
 			recognition.lang = 'ja-JP'
 			recognition.continuous = true
@@ -36,7 +37,6 @@
 		}
 
 		protected recognize(e: any) {
-			console.log(e)
 			this.recoredText += `${e.results[e.results.length - 1][0].transcript}\n`
 		}
 	}
