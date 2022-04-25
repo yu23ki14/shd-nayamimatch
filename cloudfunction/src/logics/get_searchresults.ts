@@ -1,15 +1,16 @@
 import { google } from "googleapis"
 import { HttpFunction } from '@google-cloud/functions-framework';
-import { urlencoded } from "express";
-import { url } from "inspector";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const customSearch = google.customsearch('v1');
+const { API_KEY, SEARCH_ENGINE_ID } = process.env;
 const options = {
-  cx: "",
+  cx: SEARCH_ENGINE_ID,
   q: "",
   num: 0,
   ExcludeTerms: "",
-  auth: ""
+  auth: API_KEY
 }
 
 export const getSearchResults: HttpFunction = (req, res) => {

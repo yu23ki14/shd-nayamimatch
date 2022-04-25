@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.0",
+    "dotenv": "^16.0.0",
     "googleapis": "^100.0.0"
   }
 }

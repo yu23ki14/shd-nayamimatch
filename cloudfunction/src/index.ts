@@ -23,9 +23,9 @@
 // }
 // // TODO: more examples
 
-import type {HttpFunction} from '@google-cloud/functions-framework/build/src/functions';
-import {getKeywords} from './logics/get_keywords';
-import {getSearchResults} from './logics/get_searchresults';
+import type { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
+import { getKeywords } from './logics/get_keywords';
+import { getSearchResults } from './logics/get_searchresults';
 
 export const index: HttpFunction = async (req, res) => {
   switch (req.path) {
