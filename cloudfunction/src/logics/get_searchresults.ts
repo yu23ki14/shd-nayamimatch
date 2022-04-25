@@ -5,11 +5,11 @@ import { url } from "inspector";
 
 const customSearch = google.customsearch('v1');
 const options = {
-  cx: "9bc5302f216ada935",
+  cx: "",
   q: "",
   num: 0,
   ExcludeTerms: "",
-  auth: "AIzaSyDW9ZLZazQikKD1MuIaJaX1cdzq77pOYD0"
+  auth: ""
 }
 
 export const getSearchResults: HttpFunction = (req, res) => {
