@@ -16,7 +16,7 @@
 		"sass": "^1.50.1",
 		"sass-loader": "^12.6.0",
 		"vue": "^3.2.13",
-		"vue-advanced-chat": "https://github.com/antoine92190/vue-advanced-chat/tarball/next",
+		"vue-advanced-chat": "git+https://github.com/yu23ki14/vue-advanced-chat.git#next",
 		"vue-axios": "^3.4.1",
 		"vue-class-component": "^8.0.0-0",
 		"vue-router": "^4.0.3"

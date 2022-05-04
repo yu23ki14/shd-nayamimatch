@@ -6464,9 +6464,9 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
-"vue-advanced-chat@https://github.com/antoine92190/vue-advanced-chat/tarball/next":
+"vue-advanced-chat@git+https://github.com/yu23ki14/vue-advanced-chat.git#next":
   version "1.5.3"
-  resolved "https://github.com/antoine92190/vue-advanced-chat/tarball/next#e02d41afa8e940c7e7ca8557cfc3abc18323b8e3"
+  resolved "git+https://github.com/yu23ki14/vue-advanced-chat.git#3bffc332fdd68ae8b04a928edab32d311d150e4a"
   dependencies:
     emoji-picker-element "^1.8.1"
     linkifyjs "^2.1.9"

@@ -23,7 +23,6 @@
 	import ChatWindow, { Message, Room, StringNumber } from 'vue-advanced-chat'
 	import Talking from '../components/room/Talking.vue'
 	import 'vue-advanced-chat/dist/vue-advanced-chat.css'
-	import dayjs from 'dayjs'
 
 	@Options({
 		components: {
@@ -51,36 +50,39 @@
 		messages: Message[] = []
 
 		isTalking = false
+		talkingType: 'new' | 'additional' = 'new'
+		searchKeywords = ''
 
 		async mounted() {
 			await this.pushNewMessage({
 				content: '毎日お疲れやで\nだれも聞いてないから、ちょっと愚痴ってみ',
 				senderId: 'higuma',
-				date: dayjs().toString(),
-				timestamp: '',
 				avatar: this.higumaAvator
 			})
+			await this.pushTalkButton()
+		}
 
+		async pushTalkButton(type?: 'new' | 'additional') {
+			document.getElementById('tell')?.remove()
 			await this.pushNewMessage({
 				_id: 'tell',
 				content: '話す',
-				senderId: 'higuma',
-				date: dayjs().toString(),
-				timestamp: ''
+				senderId: 'higuma'
 			})
+
+			await this.pushLinkCard({ title: 'hello', href: 'test' })
 
 			setTimeout(() => {
 				document.getElementById('tell')?.addEventListener('click', () => {
 					this.isTalking = true
+					this.talkingType = type || 'new'
 				})
-			}, 200)
+			}, 500)
 		}
 
 		pushNewMessage(params: {
 			content: string
 			senderId: 'higuma' | 'me'
-			date: string
-			timestamp: string
 			_id?: StringNumber
 			avatar?: any
 		}) {
@@ -89,22 +91,56 @@
 					resolve(
 						this.messages.push({
 							...params,
-							_id: params._id || this.messages.length
+							_id: params._id || this.messages.length,
+							timestamp: '',
+							date: ''
 						})
 					)
-				}, 200)
+				}, 500)
+			})
+		}
+
+		pushLinkCard(params: { title: string; href: string; img?: string }) {
+			return new Promise((resolve) => {
+				setTimeout(() => {
+					resolve(
+						this.messages.push({
+							content: '',
+							senderId: 'higuma',
+							_id: this.messages.length,
+							timestamp: '',
+							date: '',
+							link: params
+						})
+					)
+				}, 100)
 			})
 		}
 
 		async stopTalking(e: string) {
 			this.isTalking = false
-			await this.pushNewMessage({
-				content: 'ありがとうな！\n大変やったなぁ・・・',
-				senderId: 'higuma',
-				date: '',
-				timestamp: '',
-				avatar: this.higumaAvator
-			})
+			if (this.talkingType === 'new') {
+				await this.pushNewMessage({
+					content: 'ありがとうな！\n大変やったなぁ・・・',
+					senderId: 'higuma',
+					avatar: this.higumaAvator
+				})
+				const { data } = await this.axios.post('/get-keywords', {})
+				this.searchKeywords += `${data} `
+				await this.pushNewMessage({
+					content: `${data}のところ、もう少し詳しく聞かせてや`,
+					senderId: 'higuma',
+					avatar: this.higumaAvator
+				})
+				await this.pushTalkButton('additional')
+			} else if (this.talkingType === 'additional') {
+				const { data: keywords } = await this.axios.post('/get-keywords', {})
+				this.searchKeywords += `${keywords} `
+				const { data: searchResults } = await this.axios.post(
+					'/get-keywords',
+					{}
+				)
+			}
 		}
 
 		onSendMessage(message: Message) {
