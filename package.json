@@ -10,6 +10,8 @@
 	"dependencies": {
 		"axios": "^0.26.1",
 		"core-js": "^3.8.3",
+		"dayjs": "^1.11.1",
+		"modern-css-reset": "^1.4.0",
 		"register-service-worker": "^1.7.2",
 		"sass": "^1.50.1",
 		"sass-loader": "^12.6.0",
