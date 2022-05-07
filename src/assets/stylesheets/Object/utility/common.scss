@@ -1,13 +1,25 @@
-.bg_baseBrown {
+.bg-baseBrown {
   background-color: $baseBrown;
 }
-.bg_baseBrown-50 {
+.bg-baseBrown-50 {
   background-color: $baseBrown-50;
+}
+.bg-darkBrown {
+  background-color: $darkBrown;
 }
 
 .color-annotation {
   color: $annotation;
 }
+.color-darkBrown {
+  color: $darkBrown;
+}
+.color-white {
+  color: white;
+}
 .center {
   text-align: center;
+}
+.bold {
+  font-weight: bold;
 }
