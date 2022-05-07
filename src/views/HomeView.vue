@@ -1,7 +1,7 @@
 <template>
-	<div class="main_wrapper">
-		<div class="main">
-			<section class="section_inner pt-50 bg-baseBrown">
+	<div>
+		<div class="pt-50 bg-baseBrown">
+			<section class="main_section">
 				<h1 class="center">
 					<span class="color-darkBrown text-xl bold">子育てスナック</span><br>
 					<span class="color-darkBrown text-2xl bold">ひぐまさんの相談部屋</span>
@@ -31,7 +31,10 @@
 					/>
 				</div>
 			</section>
-			<section class="section_inner pt-50 pb-50">
+		</div>
+
+		<div class="pt-50 pb-50">
+			<section class="main_section">
 				<h2 class="center text-xl bold">ひぐまさんの相談部屋とは?</h2>
 				<p class="text-base p-10 mt-25">
 					毎日の子育ての中での色々な悩みやモヤモヤをワンオペくまのひぐまさんにお話してみませんか？<br>
@@ -60,7 +63,10 @@
 					</li>
 				</ul>
 			</section>
-			<section class="section_inner pt-50 pb-100 bg-baseBrown">
+		</div>
+
+		<div class="pt-50 pb-100 bg-baseBrown">
+			<section class="main_section">
 				<h2 class="center text-xl bold color-darkBrown">ひぐまさんの３つの約束</h2>
 				<ul class="mt-35">
 					<li v-for="item in promise" :key="item.id" class="promise_item bg-white">
@@ -69,10 +75,10 @@
 					</li>
 				</ul>
 			</section>
-			<transition name="fade">
-				<MenuArea v-if="isMenuShow" />
-			</transition>
 		</div>
+		<transition name="fade">
+			<MenuArea v-if="isMenuShow" />
+		</transition>
 	</div>
 </template>
 
