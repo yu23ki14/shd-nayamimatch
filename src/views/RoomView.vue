@@ -70,8 +70,6 @@
 				senderId: 'higuma'
 			})
 
-			await this.pushLinkCard({ title: 'hello', href: 'test' })
-
 			setTimeout(() => {
 				document.getElementById('tell')?.addEventListener('click', () => {
 					this.isTalking = true
@@ -140,7 +138,37 @@
 					'/get-keywords',
 					{}
 				)
+				await this.pushNewMessage({
+					content: 'こんな情報があるみたいだよ\n参考になると嬉しいな',
+					senderId: 'higuma',
+					avatar: this.higumaAvator
+				})
+				await this.pushLinkCard({
+					title: '子育てだけじゃない！自分のイライラ対策にも使えます。',
+					href: 'https://note.com/rietsu/n/n93236da2311f',
+					img: 'https://assets.st-note.com/production/uploads/images/77725899/rectangle_large_type_2_b3fac5f726e117bb7e471387b52bee52.png?fit=bounds&quality=85&width=1280'
+				})
+				await this.pushLinkCard({
+					title: '【子育て】子育てはキラキラしたものではない',
+					href: 'https://note.com/km2237adoy/n/n559eef3a0500',
+					img: 'https://assets.st-note.com/production/uploads/images/77408984/rectangle_large_type_2_d452b65322f4852263c4e6206f940c5a.png?fit=bounds&quality=85&width=1280'
+				})
+				await this.pushLinkCard({
+					title: '音声配信をはじめて子育てにどう影響したか？',
+					href: 'https://note.com/kosodate_radio/n/ne5cee5698c64',
+					img: 'https://assets.st-note.com/production/uploads/images/45083610/rectangle_large_type_2_e778e912c83bc6bef868e6c34f5bfab3.png?fit=bounds&quality=85&width=1280'
+				})
+				this.closing()
 			}
+		}
+
+		async closing() {
+			await this.pushNewMessage({
+				content: 'ちょっとは力になれたかな\nまだ話したいことはある？聞くよ',
+				senderId: 'higuma',
+				avatar: this.higumaAvator
+			})
+			await this.pushTalkButton('new')
 		}
 
 		onSendMessage(message: Message) {

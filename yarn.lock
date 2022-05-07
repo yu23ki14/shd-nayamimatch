@@ -6466,7 +6466,7 @@ vary@~1.1.2:
 
 "vue-advanced-chat@git+https://github.com/yu23ki14/vue-advanced-chat.git#next":
   version "1.5.3"
-  resolved "git+https://github.com/yu23ki14/vue-advanced-chat.git#3bffc332fdd68ae8b04a928edab32d311d150e4a"
+  resolved "git+https://github.com/yu23ki14/vue-advanced-chat.git#edf4c6e570968fbf61a6d5c40aca759d51c2bc3a"
   dependencies:
     emoji-picker-element "^1.8.1"
     linkifyjs "^2.1.9"
