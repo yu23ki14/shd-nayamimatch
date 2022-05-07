@@ -1,0 +1,13 @@
+.main {
+  @media screen and (min-width: 750px) {
+    width: 750px;
+  }
+  &_wrapper {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.section_inner {
+  padding: 0 5%;
+}
