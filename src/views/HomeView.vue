@@ -21,7 +21,7 @@
 									class="top_message_talk_icon"
 								/>
 						</div>
-						<p class="color-annotation text-xs mt-10">ひぐまさんとの会話をスタート</p>
+						<p class="color-annotation text-xs mt-15">ひぐまさんとの会話をスタート</p>
 					</div>
 				</div>
 				<div class="higmas_img mt-45">
@@ -48,7 +48,7 @@
 						<div class="step_item_sign color-white bold bg-darkBrown">
 							STEP{{ step.id }}
 						</div>
-						<p class="step_item_content text-sm bold">{{ step.content }}</p>
+						<p class="text-sm bold">{{ step.content }}</p>
 						<div class="step_item_message mt-10">
 							<p class="text-xs speech_bubble right pt-5 pb-5 pl-15 pr-15">{{ step.message }}</p>
 								<img
@@ -60,17 +60,29 @@
 					</li>
 				</ul>
 			</section>
+			<section class="section_inner pt-50 pb-100 bg-baseBrown">
+				<h2 class="center text-xl bold color-darkBrown">ひぐまさんの３つの約束</h2>
+				<ul class="mt-35">
+					<li v-for="item in promise" :key="item.id" class="promise_item bg-white">
+						<h3 class="text-lg bold center">{{ item.id }}.{{ item.title }}</h3>
+						<p class="text-sm mt-15">{{ item.content }}</p>
+					</li>
+				</ul>
+			</section>
+			<transition name="fade">
+				<MenuArea v-if="isMenuShow" />
+			</transition>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
 	import { Options, Vue } from 'vue-class-component'
+	import MenuArea from '../components/MenuArea.vue'
 	@Options({
-		// components: {
-		// 	HelloWorld,
-		// 	VoiceRecognition
-		// }
+		components: {
+			MenuArea
+		}
 	})
 	export default class HomeView extends Vue {
 		steps = [
@@ -90,6 +102,33 @@
 				message: "20％くらい楽になるかもな"
 			},
 		]
+		promise = [
+			{ 
+				id: 1,
+				title: "ニンゲンは聞いてません!",
+				content: "あなたがお話ししてしてくれたことを、こっそり誰かが聞いている、、、なんてことはありません！聴いているのはひぐまさんだけです!"
+			},
+			{ 
+				id: 2,
+				title: "どんなことでも否定しません!",
+				content: "モヤモヤしていること、言葉にするのってすごく大変。だから、正しく伝えようなんて思わなくても大丈夫。今の気持ちをぐちゃぐちゃのままお話ししてみてね"
+			},
+			{ 
+				id: 3,
+				title: "一生懸命さがします!",
+				content: "あなたが話してくれたことのなかから、キーワードを探して、「こんなことで悩んでいるのかな？」と予想します。そこから役に立ちそうな情報や投稿を探してくるよ"
+			},
+		]
+		scrollY = 0
+		get isMenuShow(): boolean {
+				return this.scrollY > 300
+		}
+		async mounted() {
+			window.onscroll = this.handleScroll
+		}
+		handleScroll() {
+			this.scrollY = window.scrollY
+		}
 	}
 </script>
 
@@ -141,20 +180,10 @@
 		width: 75%;
 	}
 }
-/* @mixin comment_deco {
-	content: "";
-	width: 50px;
-	height: 80%;
-	position: absolute;
-	top: 50%;
-	right: 50px;
-	display: block;
-} */
 .step_item {
 	&:not(:last-child) {
 		margin-bottom: 15px;
 	}
-	list-style: none;
 	position: relative;
 	border-radius: 10px;
 	padding: 15px 15px 0 90px;
@@ -172,24 +201,11 @@
 		justify-content: center;
 		align-items: center;
 	}
-	&_content {
-		/* width: calc(100% - 80px); */
-	}
 	&_message {
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
 		position: relative;
-		/* &::before {
-			@include comment_deco;
-			border-top: solid 1px $darkBrown;
-			transform: translate(0, -50%) rotate(10deg);
-		}
-		&::after {
-			@include comment_deco;
-			border-bottom: solid 1px $darkBrown;
-			transform: translate(0, -50%) rotate(-10deg);
-		} */
 	}
 	&_icon {
 		width: 50px;
@@ -197,6 +213,20 @@
 		border-radius: 50%;
 		transform: translate(15px, 5px);
 	}
+}
+.promise_item {
+	&:not(:last-child) {
+		margin-bottom: 15px;
+	}
+	border-radius: 15px;
+	padding: 15px 20px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: all .3s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  transform: translateY(50px);
 }
 </style>
 
