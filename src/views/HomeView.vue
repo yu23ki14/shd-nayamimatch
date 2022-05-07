@@ -14,13 +14,15 @@
 					/>
 					<div class="speech_bubble left top_message_comment p-15">
 						<p class="text-base">ひぐまさんに愚痴りませんか?</p>
-							<div class="top_message_talk_icon mt-25">
+							<router-link to="/room"
+								class="top_message_talk_icon mt-25"
+							>
 								<img
 									src="../assets/images/talk_icon.svg"
 									alt="トークアイコン"
 									class="top_message_talk_icon"
 								/>
-						</div>
+						</router-link>
 						<p class="color-annotation text-xs mt-15">ひぐまさんとの会話をスタート</p>
 					</div>
 				</div>
@@ -94,17 +96,17 @@
 		steps = [
 			{
 				id: 1,
-				content: "トークボタンでひぐまさんモヤモヤを話す",
+				content: "トークボタンを押して、ひぐまさんにモヤモヤしていることを話してみよう",
 				message: "なんでも言ってみ！"
 			},
 			{
 				id: 2,
-				content: "お話しの内容から、ひぐまさんがお悩みを予想",
+				content: "お話しの内容から、ひぐまさんがお悩みを予想します",
 				message: "モヤモヤポイントはここか？"
 			},
 			{
 				id: 3,
-				content: "役に立ちそうな情報を探してくるよ！",
+				content: "お悩みが少し楽になりそうな情報を探してくるよ！",
 				message: "20％くらい楽になるかもな"
 			},
 		]
