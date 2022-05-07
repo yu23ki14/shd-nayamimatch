@@ -2,7 +2,7 @@
 	<div class="talking-wrapper">
 		<div class="talking-inner">
 			<img
-				src="../../assets/higuma-icon.png"
+				src="../../assets/images/higuma-icon.png"
 				alt="ひぐまさんアイコン"
 				width="100"
 			/>
@@ -12,7 +12,7 @@
 				切ってね
 			</p>
 			<button @click="stopRecord()">
-				<img src="../../assets/phonedown.svg" alt="とじる" />
+				<img src="../../assets/images/phonedown.svg" alt="とじる" />
 			</button>
 		</div>
 	</div>
