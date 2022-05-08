@@ -1,6 +1,8 @@
 import { google } from "googleapis"
 import { HttpFunction } from '@google-cloud/functions-framework';
 import * as dotenv from 'dotenv';
+import axios from "axios";
+import { JSDOM } from 'jsdom'
 dotenv.config();
 
 const customSearch = google.customsearch('v1');
@@ -84,20 +86,6 @@ export const getSearchResults: HttpFunction = (req, res) => {
     //     return encodeURI(ignoreWord);
     //   });
   };
-  // console.log("query:", req.query);
-  // const keyword = req.query.keyword?.toString();
-  // if (keyword) {
-  //   options.q = keyword;
-  //   console.log("keyword:", keyword);
-  // }
-  // // TODO 検索キーワードが指定されていない場合は401エラーとすべき？
-  // const offset = req.query.offset?.toString();
-  // if (offset) {
-  //   options.num = Number(offset);
-  //   console.log("offset:", offset);
-  // }
-  // // TODO
-  // //options.ExcludeTerms = encodeURI("神奈川");
   options.q = query;
   options.num = 5;
   // options.ExcludeTerms = getSearchIgnoreWords().then();
@@ -107,6 +95,35 @@ export const getSearchResults: HttpFunction = (req, res) => {
   // });
   // console.log('test:', getSearchIgnoreWords().then(() => { console.log('then first'); }));
   // console.log('test:', getSearchIgnoreWords().then());
+
+  // const getThumbnailImage = async (targetUrl: string) => {
+  //   const encodedUri = encodeURI(targetUrl);
+  //   const headers = { 'User-Agent': 'bot' };
+  //   const extractOgp = (metaElements: HTMLMetaElement[]) => {
+  //     const ogp = metaElements
+  //       .filter((element: Element) => element.hasAttribute("property"))
+  //       .reduce((previous: any, current: Element) => {
+  //         const property = current.getAttribute("property")?.trim();
+  //         if (!property) return;
+  //         const content = current.getAttribute("content");
+  //         previous[property] = content;
+  //         return previous;
+  //       }, {});
+  //     console.log("getThumbnailImage ogp:", ogp);
+  //     return ogp;
+  //   }
+
+  //   try {
+  //     const res = await axios.get(encodedUri, { headers: headers });
+  //     const dom = new JSDOM(res.data);
+  //     const meta = dom.window.document.head.querySelectorAll("meta");
+  //     const ogp = extractOgp([...meta]);
+  //     return ogp;
+  //   } catch (error) {
+  //     console.error("getThumbnailImage failed!", error);
+  //   }
+  // }
+
   console.log("option:", options);
   customSearch.cse.list(options)
     .then(value => {
@@ -118,6 +135,11 @@ export const getSearchResults: HttpFunction = (req, res) => {
           if (item.pagemap.cse_thumbnail) {
             thumbnail = item.pagemap.cse_thumbnail[0].src;
           }
+          // let thumbnail: string | undefined = '';
+          // getThumbnailImage(item.link).then();
+          // if (!thumbnail) {
+          //   thumbnail = '';
+          // }
           const result: SearchResult = {
             title: item.title,
             url: item.link,
