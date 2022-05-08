@@ -10,7 +10,7 @@ const { API_KEY, SEARCH_ENGINE_ID } = process.env;
 const options = {
   cx: SEARCH_ENGINE_ID,
   q: "",
-  num: 0,
+  num: 50,
   ExcludeTerms: "",
   auth: API_KEY
 }
@@ -71,8 +71,6 @@ export const getSearchResults: HttpFunction = async (req, res) => {
   if (offset) {
     options.num = Number(offset);
     // console.log("offset:", offset);
-  } else {
-    options.num = 5;
   }
 
   await getSearchIgnoreWords().then(value => {
@@ -108,7 +106,7 @@ export const getSearchResults: HttpFunction = async (req, res) => {
           }
           customSearchResults.push(result);
         });
-        res.send(JSON.stringify(customSearchResults));
+        res.send(JSON.stringify({ results: customSearchResults }));
       }
       return customSearchResults;
     })
