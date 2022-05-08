@@ -24,7 +24,7 @@ const options = {
 interface SearchResult {
   title: string;
   url: string;
-  thumbnail: string | undefined;
+  thumbnail: string;
 }
 
 // async function getSearchIgnoreWords(): Promise<string> {
@@ -59,7 +59,7 @@ interface SearchResult {
 // }
 
 export const getSearchResults: HttpFunction = async (req, res) => {
-  console.log("body:", req.body);
+  // console.log("body:", req.body);
 
   let query: string = "";
   const keywords = req.body.keywords;
@@ -73,7 +73,7 @@ export const getSearchResults: HttpFunction = async (req, res) => {
     res.status(400).json({ message: 'keywords is empty' });
     return;
   }
-  console.log("query:", query);
+  // console.log("query:", query);
 
   const getSearchIgnoreWords = async () => {
     const ignoreWordList = ["おむつプレイ", "ナプキン"];
@@ -84,73 +84,109 @@ export const getSearchResults: HttpFunction = async (req, res) => {
   options.q = query;
   options.num = 5;
   await getSearchIgnoreWords().then(value => {
-    console.log("value:", value);
+    // console.log("value:", value);
     options.ExcludeTerms = value;
   });
-  // options.ExcludeTerms = getSearchIgnoreWords().then();
-  // getSearchIgnoreWords().then(ignoreWords => {
-  //   console.log("ignoreWords:", ignoreWords);
-  //   options.ExcludeTerms = ignoreWords;
-  // });
-  // console.log('test:', getSearchIgnoreWords().then(() => { console.log('then first'); }));
-  // console.log('test:', getSearchIgnoreWords().then());
-
-  // const getThumbnailImage = async (targetUrl: string) => {
-  //   const encodedUri = encodeURI(targetUrl);
-  //   const headers = { 'User-Agent': 'bot' };
-  //   const extractOgp = (metaElements: HTMLMetaElement[]) => {
-  //     const ogp = metaElements
-  //       .filter((element: Element) => element.hasAttribute("property"))
-  //       .reduce((previous: any, current: Element) => {
-  //         const property = current.getAttribute("property")?.trim();
-  //         if (!property) return;
-  //         const content = current.getAttribute("content");
-  //         previous[property] = content;
-  //         return previous;
-  //       }, {});
-  //     console.log("getThumbnailImage ogp:", ogp);
-  //     return ogp;
-  //   }
-
-  //   try {
-  //     const res = await axios.get(encodedUri, { headers: headers });
-  //     const dom = new JSDOM(res.data);
-  //     const meta = dom.window.document.head.querySelectorAll("meta");
-  //     const ogp = extractOgp([...meta]);
-  //     return ogp;
-  //   } catch (error) {
-  //     console.error("getThumbnailImage failed!", error);
-  //   }
-  // }
 
   console.log("option:", options);
   customSearch.cse.list(options)
     .then(value => {
+      let customSearchResults: SearchResult[] = [];
       if (value.data.items) {
-        let results: SearchResult[] = [];
-        value.data.items.forEach((item: any, index: number) => {
+        value.data.items.forEach((item: any, index: number): void => {
           // console.log(`index:${index}, item:`, item);
-          let thumbnail: string | undefined = '';
-          if (item.pagemap.cse_thumbnail) {
-            thumbnail = item.pagemap.cse_thumbnail[0].src;
-          }
-          // let thumbnail: string | undefined = '';
-          // getThumbnailImage(item.link).then();
-          // if (!thumbnail) {
-          //   thumbnail = '';
-          // }
           const result: SearchResult = {
             title: item.title,
             url: item.link,
-            thumbnail: thumbnail
+            thumbnail: ''
           }
-          results.push(result);
+          if (item.pagemap.cse_thumbnail) {
+            result.thumbnail = item.pagemap.cse_thumbnail[0].src;
+          } else if (item.pagemap.metatags) {
+            for (const [key, value] of Object.entries(item.pagemap.metatags)) {
+              // console.log(`${key}: ${value}`);
+              if (key === 'og:image') {
+                const ogimage = value as string;
+                if (ogimage) {
+                  result.thumbnail = ogimage;
+                }
+                break;
+              }
+            }
+          }
+          customSearchResults.push(result);
         });
-        res.send(JSON.stringify(results));
+        res.send(JSON.stringify(customSearchResults));
       }
+      return customSearchResults;
     })
+    // .then(customSearchResults => {
+    //   console.log("customSearchResults:", customSearchResults);
+    //   if (!customSearchResults || customSearchResults.length === 0) {
+    //     return customSearchResults;
+    //   }
+    //   const thumbnailResults = customSearchResults.map(async result => {
+    //     await getThumbnailURL(result.url).then(url => {
+    //       console.log("url:", url);
+    //       if (url) {
+    //         result.thumbnail = url;
+    //       }
+    //     });
+    //   });
+    //   return thumbnailResults;
+    // })
+    // .then(thumbnailResults => {
+    //   console.log("thumbnailResults:", thumbnailResults);
+    //   res.send(JSON.stringify(thumbnailResults));
+    // })
     .catch(error => {
       console.error(error);
       res.status(500).json({ message: `<Internal Server Error.> ${error}` });
     });
 };
+
+// async function getThumbnailURL(targetUrl: string): Promise<string | undefined> {
+//   const extractOgp = (metaElements: HTMLMetaElement[]) => {
+//     const ogp = metaElements
+//       .filter((element: Element) => element.hasAttribute("property"))
+//       .reduce((previous: any, current: Element) => {
+//         const property = current.getAttribute("property")?.trim();
+//         if (!property) return;
+//         const content = current.getAttribute("content");
+//         previous[property] = content;
+//         return previous;
+//       }, {});
+//     // console.log("getThumbnailImage ogp:", ogp);
+//     return ogp;
+//   }
+
+//   let imagesrc: string | undefined;
+//   // リクエストで渡されたURLごとにOGPを取得
+//   const targetUrls: string[] = [targetUrl];
+//   await Promise.all(
+//     targetUrls.map(async (targetUrl: string) => {
+//       const encodedUri = encodeURI(targetUrl);
+//       const headers = { 'User-Agent': 'bot' };
+
+//       console.log(`targetUrl:${targetUrl}`);
+
+//       try {
+//         const res = await axios.get(encodedUri, { headers: headers });
+//         const html = res.data;
+//         const dom = new JSDOM(html);
+//         const meta = dom.window.document.head.querySelectorAll("meta");
+//         const ogp = extractOgp(Array.from(meta));
+
+//         for (const [key, value] of Object.entries(ogp)) {
+//           // console.log(`${key}: ${value}`);
+//           if (key === 'og:image') {
+//             imagesrc = value as string;
+//             break;
+//           }
+//         }
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     }));
+//   return imagesrc;
+// }
