@@ -1,8 +1,8 @@
 import { google } from "googleapis"
 import { HttpFunction } from '@google-cloud/functions-framework';
 import * as dotenv from 'dotenv';
-import axios from "axios";
-import { JSDOM } from 'jsdom'
+// import axios from "axios";
+// import { JSDOM } from 'jsdom'
 dotenv.config();
 
 const customSearch = google.customsearch('v1');
@@ -58,7 +58,7 @@ interface SearchResult {
 //   return result.data;
 // }
 
-export const getSearchResults: HttpFunction = (req, res) => {
+export const getSearchResults: HttpFunction = async (req, res) => {
   console.log("body:", req.body);
 
   let query: string = "";
@@ -76,18 +76,17 @@ export const getSearchResults: HttpFunction = (req, res) => {
   console.log("query:", query);
 
   const getSearchIgnoreWords = async () => {
-    const ignoreWordList = ["おむつプレイ"];
+    const ignoreWordList = ["おむつプレイ", "ナプキン"];
     const ignoreWord = ignoreWordList.join(',').replace(/,/g, ' ');
-    console.log("ignoreWord:", ignoreWord);
+    // console.log("ignoreWord:", ignoreWord);
     return encodeURI(ignoreWord);
-    // return new Promise((resolve) => {
-    //     const ignoreWord = ignoreWordList.join(',').replace(/,/g, ' ');
-    //     console.log("ignoreWord:", ignoreWord);
-    //     return encodeURI(ignoreWord);
-    //   });
   };
   options.q = query;
   options.num = 5;
+  await getSearchIgnoreWords().then(value => {
+    console.log("value:", value);
+    options.ExcludeTerms = value;
+  });
   // options.ExcludeTerms = getSearchIgnoreWords().then();
   // getSearchIgnoreWords().then(ignoreWords => {
   //   console.log("ignoreWords:", ignoreWords);
