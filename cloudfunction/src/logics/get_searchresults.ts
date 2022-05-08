@@ -27,15 +27,6 @@ interface SearchResult {
   thumbnail: string;
 }
 
-// async function getSearchIgnoreWords(): Promise<string> {
-//   const ignoreWordList = ["おむつプレイ"];
-//   return new Promise((resolve) => {
-//     const ignoreWord = ignoreWordList.join(',').replace(/,/g, ' ');
-//     console.log("ignoreWord:", ignoreWord);
-//     return encodeURI(ignoreWord);
-//   });
-// }
-
 // async function googleCustomSearch(query: string, offset: number = 50): Promise<any> {
 //   const options: CustomSearchOptions = {
 //     cx: SEARCH_ENGINE_ID,
@@ -74,15 +65,16 @@ export const getSearchResults: HttpFunction = async (req, res) => {
     return;
   }
   // console.log("query:", query);
-
-  const getSearchIgnoreWords = async () => {
-    const ignoreWordList = ["おむつプレイ", "ナプキン"];
-    const ignoreWord = ignoreWordList.join(',').replace(/,/g, ' ');
-    // console.log("ignoreWord:", ignoreWord);
-    return encodeURI(ignoreWord);
-  };
   options.q = query;
-  options.num = 5;
+
+  const offset = req.query.offset?.toString();
+  if (offset) {
+    options.num = Number(offset);
+    // console.log("offset:", offset);
+  } else {
+    options.num = 5;
+  }
+
   await getSearchIgnoreWords().then(value => {
     // console.log("value:", value);
     options.ExcludeTerms = value;
@@ -144,6 +136,13 @@ export const getSearchResults: HttpFunction = async (req, res) => {
       res.status(500).json({ message: `<Internal Server Error.> ${error}` });
     });
 };
+
+async function getSearchIgnoreWords(): Promise<string> {
+  const ignoreWordList = ["おむつプレイ", "ナプキン"];
+  const ignoreWord = ignoreWordList.join(',').replace(/,/g, ' ');
+  // console.log("ignoreWord:", ignoreWord);
+  return encodeURI(ignoreWord);
+}
 
 // async function getThumbnailURL(targetUrl: string): Promise<string | undefined> {
 //   const extractOgp = (metaElements: HTMLMetaElement[]) => {
