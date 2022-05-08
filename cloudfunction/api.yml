@@ -23,10 +23,10 @@ paths:
               properties:
                 text:
                   type: string
-                  example: '子育て大変だよー'
+                  example: "子育て大変だよー"
       responses:
         200:
-          description: '成功'
+          description: "成功"
           content:
             application/json:
               schema:
@@ -36,15 +36,23 @@ paths:
                     type: array
                     example:
                       [
-                        {keyword: '子育て', priority: 100},
-                        {keyword: '紙おむつ', priority: 80},
-                        {keyword: '布おむつ', priority: 75},
+                        { keyword: "子育て", priority: 100 },
+                        { keyword: "紙おむつ", priority: 80 },
+                        { keyword: "布おむつ", priority: 75 },
                       ]
   /get-searchresults:
     post:
       tags:
         - 検索結果
       description: 検索結果の返却
+      parameters:
+        - name: offset
+          in: query
+          description: "取得件数"
+          required: false
+          schema:
+            type: integer
+            default: 50
       requestBody:
         content:
           application/json:
@@ -54,10 +62,10 @@ paths:
               properties:
                 keywords:
                   type: array
-                  example: ['おむつ', 'かぶれ', '布', '紙']
+                  example: ["おむつ", "かぶれ", "布", "紙"]
       responses:
         200:
-          description: '成功'
+          description: "成功"
           content:
             application/json:
               schema:
@@ -68,13 +76,43 @@ paths:
                     example:
                       [
                         {
-                          title: 'サイトタイトル',
-                          url: 'https://example.com/hogehoge',
-                          thumbnail: 'https://imagelink.example.com/hogehoge.jpg OGP画像が取れそうだったらそれがほしい',
+                          title: "サイトタイトル",
+                          url: "https://example.com/hogehoge",
+                          thumbnail: "https://imagelink.example.com/hogehoge.jpg OGP画像が取れそうだったらそれがほしい",
                         },
                         {
-                          title: 'サイトタイトル',
-                          url: 'https://example.com/hogehoge',
+                          title: "サイトタイトル",
+                          url: "https://example.com/hogehoge",
                           thumbnail: null,
                         },
                       ]
+        400:
+          description: "失敗（Bad Request）"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "keywords is empty"
+        405:
+          description: "失敗（Method Not Allowed）"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "METHOD NOT ALLOWED! method:${req.method}"
+        500:
+          description: "失敗（Internal Server Error）"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "<Internal Server Error.> ${error}"
