@@ -6,7 +6,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const customSearch = google.customsearch('v1');
-const { API_KEY, SEARCH_ENGINE_ID } = process.env;
+const { API_KEY, SEARCH_ENGINE_ID, EXCLUDE_TERMS } = process.env;
 const options = {
   cx: SEARCH_ENGINE_ID,
   q: "",
@@ -136,8 +136,17 @@ export const getSearchResults: HttpFunction = async (req, res) => {
 };
 
 async function getSearchIgnoreWords(): Promise<string> {
-  const ignoreWordList = ["おむつプレイ", "ナプキン"];
-  const ignoreWord = ignoreWordList.join(',').replace(/,/g, ' ');
+  // console.log("EXCLUDE_TERMS:", EXCLUDE_TERMS);
+  let ignoreWord: string = '';
+  if (!EXCLUDE_TERMS) {
+    return ignoreWord;
+  }
+
+  if (EXCLUDE_TERMS.indexOf(',') !== -1) {
+    ignoreWord = EXCLUDE_TERMS.replace(/,/g, ' ');
+  } else {
+    ignoreWord = EXCLUDE_TERMS;
+  }
   // console.log("ignoreWord:", ignoreWord);
   return encodeURI(ignoreWord);
 }
