@@ -12,7 +12,7 @@ const options = {
   cx: SEARCH_ENGINE_ID,
   q: '',
   num: OFFSET_MAXLIMIT,
-  excludeTerms: '',
+  // excludeTerms: '',
   auth: API_KEY,
 };
 // interface CustomSearchOptions {
@@ -74,10 +74,10 @@ export const getSearchResults: HttpFunction = async (req, res) => {
     }
   }
 
-  await getSearchIgnoreWords().then(value => {
-    // console.log("value:", value);
-    options.excludeTerms = value;
-  });
+  // await getSearchIgnoreWords().then(value => {
+  //   // console.log("value:", value);
+  //   options.excludeTerms = value;
+  // });
 
   console.log('option:', options);
   customSearch.cse
