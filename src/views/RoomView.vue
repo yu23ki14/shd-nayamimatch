@@ -31,7 +31,7 @@
 		}
 	})
 	export default class RoomView extends Vue {
-		higumaAvator = require('../assets/higuma-icon.png')
+		higumaAvator = require('../assets/images/higuma-icon.png')
 		rooms: Room[] = [
 			{
 				roomId: '123',

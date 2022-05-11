@@ -1,0 +1,33 @@
+@mixin speech_bubble_deco {
+  content: "";
+  display: block;
+  position: absolute;
+  padding: 7px;
+  bottom: 15px;
+  background: inherit;
+  border: inherit;
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 5px;
+  bottom: 10px;
+  transform: rotate(315deg) skew(20deg, 20deg);
+  // z-index: -1;
+}
+.speech_bubble {
+  background-color: white;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 1px 1px 10px 0 rgba(0,0,0,0.2);
+  &.left {
+    &::after {
+      @include speech_bubble_deco;
+      left: -5px;
+    }
+  }
+  &.right {
+    &::after {
+      @include speech_bubble_deco;
+      right: -5px;
+    }
+  }
+}
