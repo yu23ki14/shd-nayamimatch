@@ -23,11 +23,15 @@
 // }
 // // TODO: more examples
 
-import type {HttpFunction} from '@google-cloud/functions-framework/build/src/functions';
-import {getKeywords} from './logics/get_keywords';
-import {getSearchResults} from './logics/get_searchresults';
+import type { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
+import { getKeywords } from './logics/get_keywords';
+import { getSearchResults } from './logics/get_searchresults';
 
 export const index: HttpFunction = async (req, res) => {
+  if (req.method != 'POST') {
+    res.status(405).json({ message: `METHOD NOT ALLOWED! method:${req.method}` }).end();
+    return;
+  }
   switch (req.path) {
     case '/get-keywords':
       await getKeywords(req, res);
