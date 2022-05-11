@@ -1,11 +1,11 @@
-import { google } from 'googleapis';
-import { HttpFunction } from '@google-cloud/functions-framework';
+import {google} from 'googleapis';
+import {HttpFunction} from '@google-cloud/functions-framework';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 const OFFSET_MAXLIMIT = 10;
 const customSearch = google.customsearch('v1');
-const { API_KEY, SEARCH_ENGINE_ID, EXCLUDE_TERMS } = process.env;
+const {API_KEY, SEARCH_ENGINE_ID, EXCLUDE_TERMS} = process.env;
 const options = {
   cx: SEARCH_ENGINE_ID,
   q: '',
@@ -20,7 +20,6 @@ interface SearchResult {
 }
 
 export const getSearchResults: HttpFunction = async (req, res) => {
-
   let query: string = '';
   const keywords = req.body.keywords;
   if (keywords) {
@@ -30,7 +29,7 @@ export const getSearchResults: HttpFunction = async (req, res) => {
       query = keywords;
     }
   } else {
-    res.status(400).json({ message: 'keywords is empty' });
+    res.status(400).json({message: 'keywords is empty'});
     return;
   }
   options.q = query;
@@ -48,7 +47,7 @@ export const getSearchResults: HttpFunction = async (req, res) => {
   //   options.excludeTerms = value;
   // });
 
-  console.log("condition", { keywords: options.q, offset: options.num });
+  console.log('condition', {keywords: options.q, offset: options.num});
   customSearch.cse
     .list(options)
     .then(value => {
@@ -75,15 +74,22 @@ export const getSearchResults: HttpFunction = async (req, res) => {
           }
           customSearchResults.push(result);
         });
-        res.send(JSON.stringify({ results: customSearchResults }));
+        res.set('Access-Control-Allow-Origin', '*');
+        if (req.method === 'OPTIONS') {
+          // Send response to OPTIONS requests
+          res.set('Access-Control-Allow-Methods', '*');
+          res.set('Access-Control-Allow-Headers', 'Content-Type');
+          res.set('Access-Control-Max-Age', '3600');
+        }
+        res.send(JSON.stringify({results: customSearchResults}));
       } else {
-        res.status(404).json({ message: 'not found' });
+        res.status(404).json({message: 'not found'});
       }
       return customSearchResults;
     })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: `<Internal Server Error.> ${error}` });
+      res.status(500).json({message: `<Internal Server Error.> ${error}`});
     });
 };
 

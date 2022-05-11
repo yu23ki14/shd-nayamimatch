@@ -23,13 +23,26 @@
 // }
 // // TODO: more examples
 
-import type { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
-import { getKeywords } from './logics/get_keywords';
-import { getSearchResults } from './logics/get_searchresults';
+import type {HttpFunction} from '@google-cloud/functions-framework/build/src/functions';
+import {getKeywords} from './logics/get_keywords';
+import {getSearchResults} from './logics/get_searchresults';
 
 export const index: HttpFunction = async (req, res) => {
-  if (req.method != 'POST') {
-    res.status(405).json({ message: `METHOD NOT ALLOWED! method:${req.method}` }).end();
+  const allowedMethods = ['POST', 'OPTIONS'];
+  if (!allowedMethods.includes(req.method)) {
+    res
+      .status(405)
+      .json({message: `METHOD NOT ALLOWED! method:${req.method}`})
+      .end();
+    return;
+  }
+  res.set('Access-Control-Allow-Origin', '*');
+  if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+    res.set('Access-Control-Allow-Methods', '*');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Max-Age', '3600');
+    res.send('');
     return;
   }
   switch (req.path) {

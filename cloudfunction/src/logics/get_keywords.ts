@@ -11,11 +11,13 @@ export const getKeywords: HttpFunction = async (req, res) => {
   const excludeType = ['PERSON'];
 
   const [result] = await lc.analyzeEntities({document: document});
+  console.log(result);
   const entities = result.entities
     ?.filter(e => !excludeType.includes(String(e.type)))
     .sort((a, b) => {
       return Number(a.salience) > Number(b.salience) ? -1 : 1;
-    });
+    })
+    .map(entity => entity.name || '');
 
   res.set('Access-Control-Allow-Origin', '*');
   if (req.method === 'OPTIONS') {
