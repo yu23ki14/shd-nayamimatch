@@ -4,6 +4,7 @@ node_modules
 /cloudfunction/build/*
 
 # local env files
+/cloudfunction/.env
 .env.local
 .env.*.local
 

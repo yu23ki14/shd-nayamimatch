@@ -1,19 +1,19 @@
-import { google } from "googleapis"
-import { HttpFunction } from '@google-cloud/functions-framework';
+import {google} from 'googleapis';
+import {HttpFunction} from '@google-cloud/functions-framework';
 import * as dotenv from 'dotenv';
 // import axios from "axios";
 // import { JSDOM } from 'jsdom'
 dotenv.config();
 
 const customSearch = google.customsearch('v1');
-const { API_KEY, SEARCH_ENGINE_ID, EXCLUDE_TERMS } = process.env;
+const {API_KEY, SEARCH_ENGINE_ID, EXCLUDE_TERMS} = process.env;
 const options = {
   cx: SEARCH_ENGINE_ID,
-  q: "",
+  q: '',
   num: 50,
-  ExcludeTerms: "",
-  auth: API_KEY
-}
+  excludeTerms: '',
+  auth: API_KEY,
+};
 // interface CustomSearchOptions {
 //   cx: string | undefined;
 //   q: string;
@@ -52,7 +52,7 @@ interface SearchResult {
 export const getSearchResults: HttpFunction = async (req, res) => {
   // console.log("body:", req.body);
 
-  let query: string = "";
+  let query: string = '';
   const keywords = req.body.keywords;
   if (keywords) {
     if (Array.isArray(keywords)) {
@@ -61,7 +61,7 @@ export const getSearchResults: HttpFunction = async (req, res) => {
       query = keywords;
     }
   } else {
-    res.status(400).json({ message: 'keywords is empty' });
+    res.status(400).json({message: 'keywords is empty'});
     return;
   }
   // console.log("query:", query);
@@ -75,11 +75,12 @@ export const getSearchResults: HttpFunction = async (req, res) => {
 
   await getSearchIgnoreWords().then(value => {
     // console.log("value:", value);
-    options.ExcludeTerms = value;
+    options.excludeTerms = value;
   });
 
-  console.log("option:", options);
-  customSearch.cse.list(options)
+  console.log('option:', options);
+  customSearch.cse
+    .list(options)
     .then(value => {
       let customSearchResults: SearchResult[] = [];
       if (value.data.items) {
@@ -88,8 +89,8 @@ export const getSearchResults: HttpFunction = async (req, res) => {
           const result: SearchResult = {
             title: item.title,
             url: item.link,
-            thumbnail: ''
-          }
+            thumbnail: '',
+          };
           if (item.pagemap.cse_thumbnail) {
             result.thumbnail = item.pagemap.cse_thumbnail[0].src;
           } else if (item.pagemap.metatags) {
@@ -106,7 +107,7 @@ export const getSearchResults: HttpFunction = async (req, res) => {
           }
           customSearchResults.push(result);
         });
-        res.send(JSON.stringify({ results: customSearchResults }));
+        res.send(JSON.stringify({results: customSearchResults}));
       }
       return customSearchResults;
     })
@@ -131,7 +132,7 @@ export const getSearchResults: HttpFunction = async (req, res) => {
     // })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: `<Internal Server Error.> ${error}` });
+      res.status(500).json({message: `<Internal Server Error.> ${error}`});
     });
 };
 
