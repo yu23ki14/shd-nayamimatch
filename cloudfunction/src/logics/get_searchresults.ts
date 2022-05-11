@@ -1,16 +1,17 @@
-import {google} from 'googleapis';
-import {HttpFunction} from '@google-cloud/functions-framework';
+import { google } from 'googleapis';
+import { HttpFunction } from '@google-cloud/functions-framework';
 import * as dotenv from 'dotenv';
 // import axios from "axios";
 // import { JSDOM } from 'jsdom'
 dotenv.config();
 
+const OFFSET_MAXLIMIT = 10;
 const customSearch = google.customsearch('v1');
-const {API_KEY, SEARCH_ENGINE_ID, EXCLUDE_TERMS} = process.env;
+const { API_KEY, SEARCH_ENGINE_ID, EXCLUDE_TERMS } = process.env;
 const options = {
   cx: SEARCH_ENGINE_ID,
   q: '',
-  num: 50,
+  num: OFFSET_MAXLIMIT,
   excludeTerms: '',
   auth: API_KEY,
 };
@@ -50,7 +51,6 @@ interface SearchResult {
 // }
 
 export const getSearchResults: HttpFunction = async (req, res) => {
-  // console.log("body:", req.body);
 
   let query: string = '';
   const keywords = req.body.keywords;
@@ -61,16 +61,17 @@ export const getSearchResults: HttpFunction = async (req, res) => {
       query = keywords;
     }
   } else {
-    res.status(400).json({message: 'keywords is empty'});
+    res.status(400).json({ message: 'keywords is empty' });
     return;
   }
-  // console.log("query:", query);
   options.q = query;
 
-  const offset = req.query.offset?.toString();
-  if (offset) {
-    options.num = Number(offset);
-    // console.log("offset:", offset);
+  const queryoffset = req.query.offset?.toString();
+  if (queryoffset) {
+    const offset = Number(queryoffset);
+    if (offset && 0 < offset && offset < OFFSET_MAXLIMIT) {
+      options.num = Number(offset);
+    }
   }
 
   await getSearchIgnoreWords().then(value => {
@@ -107,7 +108,7 @@ export const getSearchResults: HttpFunction = async (req, res) => {
           }
           customSearchResults.push(result);
         });
-        res.send(JSON.stringify({results: customSearchResults}));
+        res.send(JSON.stringify({ results: customSearchResults }));
       }
       return customSearchResults;
     })
@@ -132,7 +133,7 @@ export const getSearchResults: HttpFunction = async (req, res) => {
     // })
     .catch(error => {
       console.error(error);
-      res.status(500).json({message: `<Internal Server Error.> ${error}`});
+      res.status(500).json({ message: `<Internal Server Error.> ${error}` });
     });
 };
 
