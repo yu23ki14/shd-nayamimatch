@@ -5,6 +5,7 @@ node_modules
 
 # local env files
 /cloudfunction/.env
+/cloudfunction/gcpcredential.json
 .env.local
 .env.*.local
 

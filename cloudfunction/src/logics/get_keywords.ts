@@ -8,16 +8,21 @@ export const getKeywords: HttpFunction = async (req, res) => {
     type: 'PLAIN_TEXT',
   };
 
-  const [result] = await lc.analyzeEntities({document: document});
+  const excludeType = ['PERSON'];
 
-  setTimeout(() => {
-    res.set('Access-Control-Allow-Origin', '*');
-    if (req.method === 'OPTIONS') {
-      // Send response to OPTIONS requests
-      res.set('Access-Control-Allow-Methods', '*');
-      res.set('Access-Control-Allow-Headers', 'Content-Type');
-      res.set('Access-Control-Max-Age', '3600');
-    }
-    res.send('keywords');
-  }, 3000);
+  const [result] = await lc.analyzeEntities({document: document});
+  const entities = result.entities
+    ?.filter(e => !excludeType.includes(String(e.type)))
+    .sort((a, b) => {
+      return Number(a.salience) > Number(b.salience) ? -1 : 1;
+    });
+
+  res.set('Access-Control-Allow-Origin', '*');
+  if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+    res.set('Access-Control-Allow-Methods', '*');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Max-Age', '3600');
+  }
+  res.send(entities);
 };
