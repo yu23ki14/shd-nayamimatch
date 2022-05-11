@@ -24,7 +24,7 @@
 	export default class VoiceRecognition extends Vue {
 		recognizing = false
 		recognition: any = null
-		recordedText = 'test'
+		recordedText = ''
 
 		async mounted() {
 			const { webkitSpeechRecognition } = window as any
@@ -33,7 +33,7 @@
 			recognition.continuous = true
 			recognition.onresult = this.recognize
 			this.recognition = recognition
-			this.recordedText = 'test'
+			this.recordedText = ''
 			this.recognition.start()
 		}
 
@@ -43,7 +43,7 @@
 		}
 
 		protected recognize(e: any) {
-			this.recordedText += `${e.results[e.results.length - 1][0].transcript}\n`
+			this.recordedText += `${e.results[e.results.length - 1][0].transcript}、`
 		}
 	}
 </script>
