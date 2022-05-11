@@ -109,6 +109,8 @@ export const getSearchResults: HttpFunction = async (req, res) => {
           customSearchResults.push(result);
         });
         res.send(JSON.stringify({ results: customSearchResults }));
+      } else {
+        res.status(404).json({ message: 'not found' });
       }
       return customSearchResults;
     })
