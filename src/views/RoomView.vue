@@ -171,6 +171,29 @@
 			await this.pushTalkButton('new')
 		}
 
+		userIsTyping() {
+			return new Promise((resolve) => {
+				const lastMessage = this.messages.slice(-1)[0]
+				if (lastMessage._id === 'isTyping') {
+					setTimeout(() => {
+						this.messages.splice(-1, 1)
+					}, 100)
+				} else {
+					setTimeout(() => {
+						resolve(
+							this.messages.push({
+								senderId: 'higuma',
+								content: '入力中・・・',
+								_id: 'isTyping',
+								timestamp: '',
+								date: ''
+							})
+						)
+					}, 100)
+				}
+			})
+		}
+
 		onSendMessage(message: Message) {
 			console.log(message)
 			console.log('hello')
