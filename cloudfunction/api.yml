@@ -96,6 +96,16 @@ paths:
                   message:
                     type: string
                     example: "keywords is empty"
+        404:
+          description: "失敗（not found）"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "not found"
         405:
           description: "失敗（Method Not Allowed）"
           content:
