@@ -26,20 +26,21 @@
 		recognition: any = null
 		recordedText = ''
 
-		async mounted() {
+		created() {
 			const { webkitSpeechRecognition } = window as any
 			const recognition = new webkitSpeechRecognition()
 			recognition.lang = 'ja-JP'
 			recognition.continuous = true
 			recognition.onresult = this.recognize
 			this.recognition = recognition
-			this.recordedText = ''
 			this.recognition.start()
 		}
 
 		stopRecord() {
 			this.recognition.stop()
-			this.$emit('stopTalking', this.recordedText)
+			setTimeout(() => {
+				this.$emit('stopTalking', this.recordedText)
+			}, 500)
 		}
 
 		protected recognize(e: any) {
