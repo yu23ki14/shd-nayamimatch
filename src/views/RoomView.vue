@@ -129,6 +129,7 @@
 					senderId: 'higuma',
 					avatar: this.higumaAvator
 				})
+				await this.userIsTyping()
 				const { data } = await this.axios.post('/get-keywords', { text: e })
 				const twoKeywords = data.length > 0 ? data.slice(0, 2) : []
 				const message =
@@ -140,6 +141,7 @@
 						  ])}`
 						: 'もう少し詳しく聞かせてや'
 				this.searchKeywords = twoKeywords
+				await this.userIsTyping()
 				await this.pushNewMessage({
 					content: message,
 					senderId: 'higuma',
@@ -161,7 +163,10 @@
 				)
 				if (this.searchKeywords.length === 0 && keywords.length === 0) {
 					this.searchKeywords = ['わがまま', '遊び', '我慢']
-				} else if (!this.searchKeywords.includes(keywords[0])) {
+				} else if (
+					keywords.length > 0 &&
+					!this.searchKeywords.includes(keywords[0])
+				) {
 					this.searchKeywords.push(keywords[0])
 				}
 				const {
