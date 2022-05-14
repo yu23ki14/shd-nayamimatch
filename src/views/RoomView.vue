@@ -55,7 +55,10 @@
 
 		async mounted() {
 			await this.pushNewMessage({
-				content: '毎日お疲れやで\nだれも聞いてないから、ちょっと愚痴ってみ',
+				content: this.pickMessage([
+					'毎日お疲れやで\nだれも聞いてないから、ちょっと愚痴ってみ',
+					'毎日つかれるよね\n最近ためこんでない？\nひぐまでよかったら聞くよ'
+				]),
 				senderId: 'higuma',
 				avatar: this.higumaAvator
 			})
@@ -63,7 +66,6 @@
 		}
 
 		async pushTalkButton(type?: 'new' | 'additional') {
-			document.getElementById('tell')?.remove()
 			await this.pushNewMessage({
 				_id: 'tell',
 				content: '話す',
@@ -118,18 +120,30 @@
 		async stopTalking(e: string, isType?: boolean) {
 			this.isTalking = false
 			if (this.talkingType === 'new') {
+				document.getElementById('tell')?.remove()
 				await this.pushNewMessage({
-					content: 'ありがとうな！\n大変やったなぁ・・・',
+					content: this.pickMessage([
+						'ありがとうな！\n大変やったなぁ・・・',
+						'話してくれてありがとう'
+					]),
 					senderId: 'higuma',
 					avatar: this.higumaAvator
 				})
+				await this.userIsTyping()
 				const { data } = await this.axios.post('/get-keywords', { text: e })
-				const twoKeywords = data.slice(0, 2)
+				const twoKeywords = data.length > 0 ? data.slice(0, 2) : []
+				const message =
+					twoKeywords.length > 0
+						? `${twoKeywords.join('、')}${this.pickMessage([
+								'のところ、もう少し詳しく聞かせてや',
+								'について、もう少し詳しく教えてくれる？',
+								'が気になるなぁ、何かきっかけがあったの？'
+						  ])}`
+						: 'もう少し詳しく聞かせてや'
 				this.searchKeywords = twoKeywords
+				await this.userIsTyping()
 				await this.pushNewMessage({
-					content: `${twoKeywords.join(
-						'、'
-					)}のところ、もう少し詳しく聞かせてや`,
+					content: message,
 					senderId: 'higuma',
 					avatar: this.higumaAvator
 				})
@@ -139,13 +153,20 @@
 					await this.pushTalkButton('additional')
 				}
 			} else if (this.talkingType === 'additional') {
+				document.getElementById('tell')?.remove()
+				await this.userIsTyping()
 				const { data: keywords }: { data: string[] } = await this.axios.post(
 					'/get-keywords',
 					{
 						text: e
 					}
 				)
-				if (!this.searchKeywords.includes(keywords[0])) {
+				if (this.searchKeywords.length === 0 && keywords.length === 0) {
+					this.searchKeywords = ['わがまま', '遊び', '我慢']
+				} else if (
+					keywords.length > 0 &&
+					!this.searchKeywords.includes(keywords[0])
+				) {
 					this.searchKeywords.push(keywords[0])
 				}
 				const {
@@ -157,9 +178,13 @@
 				} = await this.axios.post('/get-searchresults', {
 					keywords: this.searchKeywords
 				})
-
+				await this.userIsTyping()
 				await this.pushNewMessage({
-					content: 'こんな情報があるみたいだよ\n参考になると嬉しいな',
+					content: this.pickMessage([
+						'こんな情報があるみたいだよ\n参考になると嬉しいな',
+						'同じようなことを思っている人がいるよ\nこういうのはどう？',
+						'もしかして悩んでることってこれ？'
+					]),
 					senderId: 'higuma',
 					avatar: this.higumaAvator
 				})
@@ -178,11 +203,41 @@
 
 		async closing() {
 			await this.pushNewMessage({
-				content: 'ちょっとは力になれたかな\nまだ話したいことはある？聞くよ',
+				content: this.pickMessage([
+					'ちょっとは力になれたかな\nまだ話したいことはある？聞くよ',
+					'使える情報だったらいいなぁ\n話したりない？聞くよ'
+				]),
 				senderId: 'higuma',
 				avatar: this.higumaAvator
 			})
 			await this.pushTalkButton('new')
+		}
+
+		userIsTyping() {
+			return new Promise((resolve) => {
+				const lastMessage = this.messages.slice(-1)[0]
+				if (lastMessage._id === 'isTyping') {
+					setTimeout(() => {
+						resolve(this.messages.splice(-1, 1))
+					}, 100)
+				} else {
+					setTimeout(() => {
+						resolve(
+							this.messages.push({
+								senderId: 'higuma',
+								content: '入力中・・・',
+								_id: 'isTyping',
+								timestamp: '',
+								date: ''
+							})
+						)
+					}, 100)
+				}
+			})
+		}
+
+		pickMessage(messageList: string[]) {
+			return messageList[Math.floor(Math.random() * messageList.length)]
 		}
 
 		onSendMessage(message: Message) {
