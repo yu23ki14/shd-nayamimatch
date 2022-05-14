@@ -63,7 +63,6 @@
 		}
 
 		async pushTalkButton(type?: 'new' | 'additional') {
-			document.getElementById('tell')?.remove()
 			await this.pushNewMessage({
 				_id: 'tell',
 				content: '話す',
@@ -118,18 +117,21 @@
 		async stopTalking(e: string, isType?: boolean) {
 			this.isTalking = false
 			if (this.talkingType === 'new') {
+				document.getElementById('tell')?.remove()
 				await this.pushNewMessage({
 					content: 'ありがとうな！\n大変やったなぁ・・・',
 					senderId: 'higuma',
 					avatar: this.higumaAvator
 				})
 				const { data } = await this.axios.post('/get-keywords', { text: e })
-				const twoKeywords = data.slice(0, 2)
+				const twoKeywords = data.length > 0 ? data.slice(0, 2) : []
+				const message =
+					twoKeywords.length > 0
+						? `${twoKeywords.join('、')}のところ、もう少し詳しく聞かせてや`
+						: 'もう少し詳しく聞かせてや'
 				this.searchKeywords = twoKeywords
 				await this.pushNewMessage({
-					content: `${twoKeywords.join(
-						'、'
-					)}のところ、もう少し詳しく聞かせてや`,
+					content: message,
 					senderId: 'higuma',
 					avatar: this.higumaAvator
 				})
@@ -139,13 +141,17 @@
 					await this.pushTalkButton('additional')
 				}
 			} else if (this.talkingType === 'additional') {
+				document.getElementById('tell')?.remove()
+				await this.userIsTyping()
 				const { data: keywords }: { data: string[] } = await this.axios.post(
 					'/get-keywords',
 					{
 						text: e
 					}
 				)
-				if (!this.searchKeywords.includes(keywords[0])) {
+				if (this.searchKeywords.length === 0 && keywords.length === 0) {
+					this.searchKeywords = ['わがまま', '遊び', '我慢']
+				} else if (!this.searchKeywords.includes(keywords[0])) {
 					this.searchKeywords.push(keywords[0])
 				}
 				const {
@@ -157,7 +163,7 @@
 				} = await this.axios.post('/get-searchresults', {
 					keywords: this.searchKeywords
 				})
-
+				await this.userIsTyping()
 				await this.pushNewMessage({
 					content: 'こんな情報があるみたいだよ\n参考になると嬉しいな',
 					senderId: 'higuma',
@@ -190,7 +196,7 @@
 				const lastMessage = this.messages.slice(-1)[0]
 				if (lastMessage._id === 'isTyping') {
 					setTimeout(() => {
-						this.messages.splice(-1, 1)
+						resolve(this.messages.splice(-1, 1))
 					}, 100)
 				} else {
 					setTimeout(() => {
