@@ -55,7 +55,10 @@
 
 		async mounted() {
 			await this.pushNewMessage({
-				content: '毎日お疲れやで\nだれも聞いてないから、ちょっと愚痴ってみ',
+				content: this.pickMessage([
+					'毎日お疲れやで\nだれも聞いてないから、ちょっと愚痴ってみ',
+					'毎日つかれるよね\n最近ためこんでない？\nひぐまでよかったら聞くよ'
+				]),
 				senderId: 'higuma',
 				avatar: this.higumaAvator
 			})
@@ -119,7 +122,10 @@
 			if (this.talkingType === 'new') {
 				document.getElementById('tell')?.remove()
 				await this.pushNewMessage({
-					content: 'ありがとうな！\n大変やったなぁ・・・',
+					content: this.pickMessage([
+						'ありがとうな！\n大変やったなぁ・・・',
+						'話してくれてありがとう'
+					]),
 					senderId: 'higuma',
 					avatar: this.higumaAvator
 				})
@@ -127,7 +133,11 @@
 				const twoKeywords = data.length > 0 ? data.slice(0, 2) : []
 				const message =
 					twoKeywords.length > 0
-						? `${twoKeywords.join('、')}のところ、もう少し詳しく聞かせてや`
+						? `${twoKeywords.join('、')}${this.pickMessage([
+								'のところ、もう少し詳しく聞かせてや',
+								'について、もう少し詳しく教えてくれる？',
+								'が気になるなぁ、何かきっかけがあったの？'
+						  ])}`
 						: 'もう少し詳しく聞かせてや'
 				this.searchKeywords = twoKeywords
 				await this.pushNewMessage({
@@ -165,7 +175,11 @@
 				})
 				await this.userIsTyping()
 				await this.pushNewMessage({
-					content: 'こんな情報があるみたいだよ\n参考になると嬉しいな',
+					content: this.pickMessage([
+						'こんな情報があるみたいだよ\n参考になると嬉しいな',
+						'同じようなことを思っている人がいるよ\nこういうのはどう？',
+						'もしかして悩んでることってこれ？'
+					]),
 					senderId: 'higuma',
 					avatar: this.higumaAvator
 				})
@@ -184,7 +198,10 @@
 
 		async closing() {
 			await this.pushNewMessage({
-				content: 'ちょっとは力になれたかな\nまだ話したいことはある？聞くよ',
+				content: this.pickMessage([
+					'ちょっとは力になれたかな\nまだ話したいことはある？聞くよ',
+					'使える情報だったらいいなぁ\n話したりない？聞くよ'
+				]),
 				senderId: 'higuma',
 				avatar: this.higumaAvator
 			})
@@ -212,6 +229,10 @@
 					}, 100)
 				}
 			})
+		}
+
+		pickMessage(messageList: string[]) {
+			return messageList[Math.floor(Math.random() * messageList.length)]
 		}
 
 		onSendMessage(message: Message) {
