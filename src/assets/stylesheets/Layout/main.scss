@@ -1,0 +1,11 @@
+.main {
+  &_section {
+    @media screen and (min-width: 750px) {
+      width: 750px;
+      margin: 0 auto;
+    }
+    padding: 0 5%;
+    width: 100%;  
+  }
+}
+

@@ -10,6 +10,7 @@
   "license": "Apache-2.0",
   "keywords": [],
   "scripts": {
+    "main": "build/src/index.js",
     "start": "functions-framework --source=build/src/ --target=index --port=3001",
     "watch": "concurrently \"tsc -w\" \"nodemon --watch ./build/ --exec npm run start\"",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -17,7 +18,6 @@
     "clean": "gts clean",
     "compile": "tsc",
     "fix": "gts fix",
-    "prepare": "npm run compile",
     "pretest": "npm run compile",
     "posttest": "npm run lint"
   },
@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.0",
+    "@google-cloud/language": "^4.3.2",
     "dotenv": "^16.0.0",
     "googleapis": "^100.0.0"
   }

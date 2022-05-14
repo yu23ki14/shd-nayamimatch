@@ -1,0 +1,128 @@
+openapi: 3.0.1
+info:
+  title: 子育てスナックヒグマさんの相談部屋
+  description: Social Hack Day：ひぐまさんの部屋のAPI定義
+  version: 1.0.0
+servers:
+  - url: /
+tags:
+  - name: キーワード抽出
+  - name: 検索結果
+paths:
+  /get-keywords:
+    post:
+      tags:
+        - キーワード抽出
+      description: キーワードの抽出
+      requestBody:
+        content:
+          application/json:
+            schema:
+              title: 発話内容
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: "子育て大変だよー"
+      responses:
+        200:
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                title: 抽出キーワード
+                properties:
+                  keywords:
+                    type: array
+                    example:
+                      [
+                        { keyword: "子育て", priority: 100 },
+                        { keyword: "紙おむつ", priority: 80 },
+                        { keyword: "布おむつ", priority: 75 },
+                      ]
+  /get-searchresults:
+    post:
+      tags:
+        - 検索結果
+      description: 検索結果の返却
+      parameters:
+        - name: offset
+          in: query
+          description: "取得件数"
+          required: false
+          schema:
+            type: integer
+            default: 50
+      requestBody:
+        content:
+          application/json:
+            schema:
+              title: 検索キーワード
+              type: object
+              properties:
+                keywords:
+                  type: array
+                  example: ["おむつ", "かぶれ", "布", "紙"]
+      responses:
+        200:
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                title: 検索結果
+                properties:
+                  results:
+                    type: object
+                    example:
+                      [
+                        {
+                          title: "サイトタイトル",
+                          url: "https://example.com/hogehoge",
+                          thumbnail: "https://imagelink.example.com/hogehoge.jpg OGP画像が取れそうだったらそれがほしい",
+                        },
+                        {
+                          title: "サイトタイトル",
+                          url: "https://example.com/hogehoge",
+                          thumbnail: null,
+                        },
+                      ]
+        400:
+          description: "失敗（Bad Request）"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "keywords is empty"
+        404:
+          description: "失敗（not found）"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "not found"
+        405:
+          description: "失敗（Method Not Allowed）"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "METHOD NOT ALLOWED! method:${req.method}"
+        500:
+          description: "失敗（Internal Server Error）"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "<Internal Server Error.> ${error}"

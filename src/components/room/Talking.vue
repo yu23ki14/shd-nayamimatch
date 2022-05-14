@@ -2,7 +2,7 @@
 	<div class="talking-wrapper">
 		<div class="talking-inner">
 			<img
-				src="../../assets/higuma-icon.png"
+				src="../../assets/images/higuma-icon.png"
 				alt="ひぐまさんアイコン"
 				width="100"
 			/>
@@ -12,7 +12,7 @@
 				切ってね
 			</p>
 			<button @click="stopRecord()">
-				<img src="../../assets/phonedown.svg" alt="とじる" />
+				<img src="../../assets/images/phonedown.svg" alt="とじる" />
 			</button>
 		</div>
 	</div>
@@ -24,26 +24,27 @@
 	export default class VoiceRecognition extends Vue {
 		recognizing = false
 		recognition: any = null
-		recordedText = 'test'
+		recordedText = ''
 
-		async mounted() {
+		created() {
 			const { webkitSpeechRecognition } = window as any
 			const recognition = new webkitSpeechRecognition()
 			recognition.lang = 'ja-JP'
 			recognition.continuous = true
 			recognition.onresult = this.recognize
 			this.recognition = recognition
-			this.recordedText = 'test'
 			this.recognition.start()
 		}
 
 		stopRecord() {
 			this.recognition.stop()
-			this.$emit('stopTalking', this.recordedText)
+			setTimeout(() => {
+				this.$emit('stopTalking', this.recordedText)
+			}, 500)
 		}
 
 		protected recognize(e: any) {
-			this.recordedText += `${e.results[e.results.length - 1][0].transcript}\n`
+			this.recordedText += `${e.results[e.results.length - 1][0].transcript}、`
 		}
 	}
 </script>
