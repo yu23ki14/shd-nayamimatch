@@ -31,6 +31,10 @@
 			const recognition = new webkitSpeechRecognition()
 			recognition.lang = 'ja-JP'
 			recognition.continuous = true
+			recognition.interimResults = true
+
+			this.recognizing = true
+
 			recognition.onresult = this.recognize
 			this.recognition = recognition
 			this.recognition.start()
@@ -44,7 +48,8 @@
 		}
 
 		protected recognize(e: any) {
-			this.recordedText += `${e.results[e.results.length - 1][0].transcript}、`
+			console.log(e.results)
+			this.recordedText = `${e.results[e.results.length - 1][0].transcript}、`
 		}
 	}
 </script>
